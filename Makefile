@@ -1,7 +1,7 @@
 PKG_VERSION := release-1.13
 PKG_COMMIT := 969f61c
 TALOS_VERSION := v1.13.2
-SBCOVERLAY_VERSION := v0.2.0
+SBCOVERLAY_VERSION := rpi5-fixes
 
 PUSH ?= true
 REGISTRY ?= ghcr.io
@@ -20,7 +20,7 @@ EXTRA_KERNEL := $(foreach arg,$(EXTRA_KERNEL_ARGS),--extra-kernel-arg $(arg))
 
 PKG_REPOSITORY := https://github.com/siderolabs/pkgs.git
 TALOS_REPOSITORY := https://github.com/siderolabs/talos.git
-SBCOVERLAY_REPOSITORY := https://github.com/siderolabs/sbc-raspberrypi
+SBCOVERLAY_REPOSITORY := https://github.com/regenscheid/sbc-raspberrypi
 
 CHECKOUTS_DIRECTORY := $(PWD)/checkouts
 PATCHES_DIRECTORY := $(PWD)/patches
