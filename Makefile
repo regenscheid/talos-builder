@@ -99,6 +99,7 @@ patches: patches-pkgs patches-talos patches-sbc-raspberrypi patches-linux
 kernel:
 	cd "$(CHECKOUTS_DIRECTORY)/pkgs" && \
 		$(MAKE) \
+			TAG=$(PKGS_TAG) \
 			REGISTRY=$(REGISTRY) USERNAME=$(REGISTRY_USERNAME) PUSH=$(PUSH) \
 			PLATFORM=linux/arm64 \
 			kernel
