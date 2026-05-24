@@ -10,6 +10,9 @@ env:
   # Format: space-separated list of image:tag references (digests resolved at build time).
   EXTENSION_ISCSI_IMAGE: ghcr.io/siderolabs/iscsi-tools:v0.2.0
   EXTENSION_UTIL_LINUX_IMAGE: ghcr.io/siderolabs/util-linux-tools:2.41.2
+  # nfs-utils provides NFSv3 locking; required for Longhorn RWX (ReadWriteMany)
+  # volumes via share-manager.
+  EXTENSION_NFS_UTILS_IMAGE: ghcr.io/siderolabs/nfs-utils:v0.1.1
 
 jobs:
   build:
@@ -117,6 +120,7 @@ jobs:
 
           - \`iscsi-tools\` ${{ env.EXTENSION_ISCSI_IMAGE }}
           - \`util-linux-tools\` ${{ env.EXTENSION_UTIL_LINUX_IMAGE }}
+          - \`nfs-utils\` ${{ env.EXTENSION_NFS_UTILS_IMAGE }}
 
           ### Artifacts
 
