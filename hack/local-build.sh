@@ -55,6 +55,15 @@ docker run --rm \
       apt-get install -y -qq --no-install-recommends \
         make git curl ca-certificates xz-utils \
         docker.io
+      # docker.io ships the engine + CLI but not the buildx plugin.
+      # The pkgs/Makefile uses `docker buildx build --target=...`, so we
+      # install buildx as a CLI plugin pointing at the host BuildKit
+      # daemon (reached via the bind-mounted docker socket).
+      BUILDX_VER=v0.20.0
+      mkdir -p /root/.docker/cli-plugins
+      curl -fsSL -o /root/.docker/cli-plugins/docker-buildx \
+        "https://github.com/docker/buildx/releases/download/${BUILDX_VER}/buildx-${BUILDX_VER}.linux-arm64"
+      chmod +x /root/.docker/cli-plugins/docker-buildx
       # crane for the installer push step
       CRANE_VER=v0.20.5
       curl -fsSL -o /tmp/crane.tar.gz \
