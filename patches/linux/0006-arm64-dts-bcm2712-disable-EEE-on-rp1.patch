@@ -1,0 +1,43 @@
+From 9ac6cb2577cadaeb509d49fa91a7af69191d21a6 Mon Sep 17 00:00:00 2001
+From: Nicolai Buchwitz <n.buchwitz@kunbus.com>
+Date: Sun, 15 Jun 2025 10:56:48 +0200
+Subject: [PATCH] dts: cm5/pi5: Disable EEE on rp1
+
+The cadence mac on rp1 doesn't support EEE, but unfortunately the phy
+advertises otherwise. This leads to high package loss or even unusable
+network interfaces in EEE capable setups.
+
+Fix this and mark EEE as broken on phy.
+
+Signed-off-by: Nicolai Buchwitz <n.buchwitz@kunbus.com>
+---
+ arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts  | 2 ++
+ arch/arm64/boot/dts/broadcom/bcm2712-rpi-cm5.dtsi | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts b/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
+index 2939214f23ade4..2d56aa951fd28f 100644
+--- a/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
++++ b/arch/arm64/boot/dts/broadcom/bcm2712-rpi-5-b.dts
+@@ -175,6 +175,8 @@ rp1_target: &pcie2 {
+ 	phy1: ethernet-phy@1 {
+ 		reg = <0x1>;
+ 		brcm,powerdown-enable;
++		eee-broken-1000t;
++		eee-broken-100tx;
+ 	};
+ };
+ 
+diff --git a/arch/arm64/boot/dts/broadcom/bcm2712-rpi-cm5.dtsi b/arch/arm64/boot/dts/broadcom/bcm2712-rpi-cm5.dtsi
+index 4eb7818f90223f..130a98d53770e1 100644
+--- a/arch/arm64/boot/dts/broadcom/bcm2712-rpi-cm5.dtsi
++++ b/arch/arm64/boot/dts/broadcom/bcm2712-rpi-cm5.dtsi
+@@ -164,6 +164,8 @@ rp1_target: &pcie2 {
+ 		brcm,powerdown-enable;
+ 		interrupt-parent = <&gpio>;
+ 		interrupts = <37 IRQ_TYPE_LEVEL_LOW>;
++		eee-broken-1000t;
++		eee-broken-100tx;
+ 	};
+ };
+ 
