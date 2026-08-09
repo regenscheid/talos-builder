@@ -1,4 +1,4 @@
-From 29e731fce087b21e3324005336539f9c92de242a Mon Sep 17 00:00:00 2001
+From 0668b340bc80cded3c0414dd0ef7b1becbc3f505 Mon Sep 17 00:00:00 2001
 From: local-build <local@build>
 Date: Wed, 8 Apr 2026 12:19:06 -0500
 Subject: [PATCH] Patched for Raspberry Pi 5
@@ -10,12 +10,12 @@ Subject: [PATCH] Patched for Raspberry Pi 5
  3 files changed, 10 insertions(+), 15 deletions(-)
 
 diff --git a/Pkgfile b/Pkgfile
-index edcb6dd..e2eb864 100644
+index 3c356f1..113afce 100644
 --- a/Pkgfile
 +++ b/Pkgfile
-@@ -13,10 +13,10 @@ vars:
-   uboot_sha256: b60d5865cefdbc75da8da4156c56c458e00de75a49b80c1a2e58a96e30ad0d54
-   uboot_sha512: b1f988a497c77da60faf89ed33034e9ae58c4cd7f208e5ce451f1372e13540a66289bee4f08ca2f68f105d73f1ceae058b1f713db549edbcc885d9c66bdc4f8b
+@@ -26,10 +26,10 @@ vars:
+   uboot_rpi5_sha256: 78e8bfc382fe388f9b55aa1daf8c563522a037779b5d4c349d1415e381f1243e
+   uboot_rpi5_sha512: 1292e1c15b75fde569efd1f983aa38e8db2e8b10b19de964886c4e80988922263bb862f5eb3b39f2051c5b28f43958f40b1f0e5c036de7fd862dc30b603cde5d
  
 -  # renovate: datasource=github-tags depName=raspberrypi/linux
 -  raspberrypi_kernel_version: stable_20250428
@@ -72,6 +72,3 @@ index 9bef001..68d995c 100644
  # Load U-Boot.
  kernel=u-boot.bin
  # Forces the kernel loading system to assume a 64-bit kernel.
--- 
-2.50.1 (Apple Git-155)
-

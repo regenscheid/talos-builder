@@ -1,7 +1,12 @@
 PKG_VERSION := release-1.13
+# Deliberately behind what TALOS_VERSION pins (v1.13.8 wants v1.13.0-55-gf677246).
+# patches/siderolabs/pkgs/0001-Patched-for-Raspberry-Pi-5.patch is a large
+# kernel .config patch that does not apply to f677246. Only the kernel package
+# is built from this tree and passed to Talos via PKG_KERNEL; Talos pulls every
+# other pkgs artifact from its own pin, so the two can diverge safely.
 PKG_COMMIT := 969f61c
-TALOS_VERSION := v1.13.2
-SBCOVERLAY_VERSION := rpi5-fixes
+TALOS_VERSION := v1.13.8
+SBCOVERLAY_VERSION := rpiboot202607
 
 PUSH ?= true
 REGISTRY ?= ghcr.io

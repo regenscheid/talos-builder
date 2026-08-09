@@ -1,17 +1,17 @@
-From 67d1020d5e27528e69b87010cc0554da11759a51 Mon Sep 17 00:00:00 2001
+From 45a424dac507ef1a2b45c5bcdf75039b00a05390 Mon Sep 17 00:00:00 2001
 From: local-build <local@build>
 Date: Wed, 8 Apr 2026 12:20:17 -0500
-Subject: [PATCH 1/2] Patched for Raspberry Pi 5
+Subject: [PATCH] Patched for Raspberry Pi 5
 
 ---
- hack/modules-arm64.txt | 378 +++++++++++++++++++----------------------
- 1 file changed, 178 insertions(+), 200 deletions(-)
+ hack/modules-arm64.txt | 383 +++++++++++++++++++----------------------
+ 1 file changed, 178 insertions(+), 205 deletions(-)
 
 diff --git a/hack/modules-arm64.txt b/hack/modules-arm64.txt
-index 9888d2b0f..256bacee7 100644
+index 9cb2afe5d..256bacee7 100644
 --- a/hack/modules-arm64.txt
 +++ b/hack/modules-arm64.txt
-@@ -1,241 +1,219 @@
+@@ -1,246 +1,219 @@
 -kernel/arch/arm64/lib/xor-neon.ko
 +modules.builtin.bin
 +modules.builtin.modinfo
@@ -103,12 +103,13 @@ index 9888d2b0f..256bacee7 100644
 -kernel/drivers/infiniband/core/ib_umad.ko
 -kernel/drivers/infiniband/core/ib_uverbs.ko
 -kernel/drivers/infiniband/core/rdma_ucm.ko
+-kernel/drivers/infiniband/hw/bnxt_re/bnxt_re.ko
 -kernel/drivers/infiniband/hw/hns/hns-roce-hw-v2.ko
 -kernel/drivers/infiniband/hw/irdma/irdma.ko
 -kernel/drivers/infiniband/hw/mlx4/mlx4_ib.ko
 -kernel/drivers/infiniband/hw/mlx5/mlx5_ib.ko
 -kernel/drivers/infiniband/sw/rxe/rdma_rxe.ko
--kernel/drivers/irqchip/irq-bcm2712-mip.ko
+-kernel/drivers/iommu/iommufd/iommufd.ko
 -kernel/drivers/irqchip/irq-imx-mu-msi.ko
 -kernel/drivers/leds/led-class-multicolor.ko
 -kernel/drivers/mailbox/bcm-flexrm-mailbox.ko
@@ -148,6 +149,7 @@ index 9888d2b0f..256bacee7 100644
 +kernel/drivers/net/mdio/mdio-mux-meson-gxl.ko
 +kernel/drivers/net/thunderbolt/thunderbolt_net.ko
  kernel/drivers/net/ethernet/amazon/ena/ena.ko
+-kernel/drivers/net/ethernet/amd/xgbe/amd-xgbe.ko
 -kernel/drivers/net/ethernet/aquantia/atlantic/atlantic.ko
  kernel/drivers/net/ethernet/atheros/alx/alx.ko
 -kernel/drivers/net/ethernet/broadcom/bnx2.ko
@@ -237,10 +239,13 @@ index 9888d2b0f..256bacee7 100644
 -kernel/drivers/net/ethernet/stmicro/stmmac/stmmac-pci.ko
 -kernel/drivers/net/ethernet/stmicro/stmmac/stmmac-platform.ko
 -kernel/drivers/net/ethernet/stmicro/stmmac/stmmac.ko
+-kernel/drivers/net/ifb.ko
 -kernel/drivers/net/mdio.ko
+-kernel/drivers/net/mdio/mdio-i2c.ko
 -kernel/drivers/net/pcs/pcs_xpcs.ko
 -kernel/drivers/net/pcs/pcs-rzn1-miic.ko
 -kernel/drivers/net/phy/dp83867.ko
+-kernel/drivers/net/phy/sfp.ko
 -kernel/drivers/net/usb/r8152.ko
 -kernel/drivers/net/vmxnet3/vmxnet3.ko
 +kernel/drivers/net/ethernet/hisilicon/hns3/hclge-common.ko
@@ -431,6 +436,3 @@ index 9888d2b0f..256bacee7 100644
  modules.builtin
 -modules.builtin.modinfo
 -modules.order
--- 
-2.50.1 (Apple Git-155)
-
