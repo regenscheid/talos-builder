@@ -35,6 +35,26 @@ TALOS_TAG ?= $(or ${TAG}, $(shell cd $(CHECKOUTS_DIRECTORY)/talos && git describ
 SBCOVERLAY_TAG ?= $(shell cd $(CHECKOUTS_DIRECTORY)/sbc-raspberrypi && git describe --tag --always --dirty --match v[0-9]\*)
 
 #
+# Kernel image tag
+#
+# The kernel takes ~70 minutes to build and is by far the longest step, but it
+# only depends on the pkgs tree and the patches applied to it -- never on the
+# Talos version or the release tag. Tagging it with the release tag meant every
+# rc rebuilt a bit-identical image. Tag it by its inputs instead, so the build
+# is skipped whenever that exact kernel has already been published.
+#
+# KERNEL_EPOCH covers inputs that are not files under patches/, notably the
+# patches-linux recipe below. Bump it by hand when you change those. Adding an
+# input to the hash only costs a rebuild; leaving one out ships a stale kernel,
+# so err towards bumping.
+KERNEL_EPOCH ?= 1
+KERNEL_INPUT_HASH := $(shell cat $(PATCHES_DIRECTORY)/siderolabs/pkgs/*.patch \
+	$(PATCHES_DIRECTORY)/linux/*.patch 2>/dev/null \
+	| { shasum -a 256 2>/dev/null || sha256sum; } | cut -c1-12)
+KERNEL_TAG ?= k$(KERNEL_EPOCH)-$(PKG_COMMIT)-$(KERNEL_INPUT_HASH)
+KERNEL_IMAGE := $(REGISTRY)/$(REGISTRY_USERNAME)/kernel:$(KERNEL_TAG)
+
+#
 # Help
 #
 .PHONY: help
@@ -102,12 +122,18 @@ patches: patches-pkgs patches-talos patches-sbc-raspberrypi patches-linux
 
 .PHONY: kernel
 kernel:
-	cd "$(CHECKOUTS_DIRECTORY)/pkgs" && \
+	@echo "KERNEL_IMAGE = $(KERNEL_IMAGE)"
+	@if crane manifest "$(KERNEL_IMAGE)" >/dev/null 2>&1; then \
+		echo "kernel already published for these inputs, skipping build"; \
+	else \
+		echo "no published kernel for these inputs, building"; \
+		cd "$(CHECKOUTS_DIRECTORY)/pkgs" && \
 		$(MAKE) \
-			TAG=$(PKGS_TAG) \
+			TAG=$(KERNEL_TAG) \
 			REGISTRY=$(REGISTRY) USERNAME=$(REGISTRY_USERNAME) PUSH=$(PUSH) \
 			PLATFORM=linux/arm64 \
-			kernel
+			kernel; \
+	fi
 
 .PHONY: overlay
 overlay:
@@ -124,7 +150,7 @@ imager:
 	cd "$(CHECKOUTS_DIRECTORY)/talos" && \
 		$(MAKE) \
 			TAG=${TALOS_TAG} REGISTRY=$(REGISTRY) USERNAME=$(REGISTRY_USERNAME) PUSH=$(PUSH) \
-			PKG_KERNEL=$(REGISTRY)/$(REGISTRY_USERNAME)/kernel:$(PKGS_TAG) \
+			PKG_KERNEL=$(KERNEL_IMAGE) \
 			INSTALLER_ARCH=arm64 PLATFORM=linux/arm64 SED=$(SED) \
 			imager
 
@@ -133,7 +159,7 @@ installer-base:
 	cd "$(CHECKOUTS_DIRECTORY)/talos" && \
 		$(MAKE) \
 			TAG=${TALOS_TAG} REGISTRY=$(REGISTRY) USERNAME=$(REGISTRY_USERNAME) PUSH=$(PUSH) \
-			PKG_KERNEL=$(REGISTRY)/$(REGISTRY_USERNAME)/kernel:$(PKGS_TAG) \
+			PKG_KERNEL=$(KERNEL_IMAGE) \
 			INSTALLER_ARCH=arm64 PLATFORM=linux/arm64 SED=$(SED) \
 			installer-base
 
@@ -142,7 +168,7 @@ initramfs-kernel:
 	cd "$(CHECKOUTS_DIRECTORY)/talos" && \
 		$(MAKE) \
 			TAG=${TALOS_TAG} REGISTRY=$(REGISTRY) USERNAME=$(REGISTRY_USERNAME) \
-			PKG_KERNEL=$(REGISTRY)/$(REGISTRY_USERNAME)/kernel:$(PKGS_TAG) \
+			PKG_KERNEL=$(KERNEL_IMAGE) \
 			INSTALLER_ARCH=arm64 PLATFORM=linux/arm64 SED=$(SED) \
 			initramfs kernel
 
