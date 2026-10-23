@@ -13,6 +13,13 @@ env:
   # nfs-utils provides NFSv3 locking; required for Longhorn RWX (ReadWriteMany)
   # volumes via share-manager.
   EXTENSION_NFS_UTILS_IMAGE: ghcr.io/siderolabs/nfs-utils:v0.1.1
+  # Appended to the overlay's config.txt (after its final [all] section).
+  # Through v1.13.8-rpi5-rc2 this was never set in CI, so builds appended nothing.
+  # PCIe Gen 3 on the external x1 link (NVMe); not officially supported by
+  # Raspberry Pi -- watch dmesg for NVMe/AER errors. No RTC charging: the
+  # DeskPi Super6C has no per-CM5 RTC battery.
+  CONFIG_TXT: |
+    dtparam=pciex1_gen=3
 
 jobs:
   build:
