@@ -8,8 +8,13 @@ env:
   REGISTRY_USERNAME: ${{ github.repository_owner }}/talos-builder
   # Extensions to bake into the installer image.
   # Format: space-separated list of image:tag references (digests resolved at build time).
+  # Versions follow the siderolabs/extensions catalog for the Talos release.
+  # Not usable on Pi 5 with this kernel, so deliberately absent:
+  #   gvisor          -- built for 4K pages; the vendor kernel uses 16K pages.
+  #   kata-containers -- runs VMs on cloud-hypervisor, which needs GICv3 under
+  #                      KVM; BCM2712 has a GICv2 (GIC-400).
   EXTENSION_ISCSI_IMAGE: ghcr.io/siderolabs/iscsi-tools:v0.2.0
-  EXTENSION_UTIL_LINUX_IMAGE: ghcr.io/siderolabs/util-linux-tools:2.41.2
+  EXTENSION_UTIL_LINUX_IMAGE: ghcr.io/siderolabs/util-linux-tools:2.42.2
   # nfs-utils provides NFSv3 locking; required for Longhorn RWX (ReadWriteMany)
   # volumes via share-manager.
   EXTENSION_NFS_UTILS_IMAGE: ghcr.io/siderolabs/nfs-utils:v0.1.1
