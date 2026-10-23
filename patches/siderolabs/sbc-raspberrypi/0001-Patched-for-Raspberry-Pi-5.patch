@@ -1,4 +1,4 @@
-From 0668b340bc80cded3c0414dd0ef7b1becbc3f505 Mon Sep 17 00:00:00 2001
+From 174e8df2200dcb8e0be60a2bbb707f1ba9763ede Mon Sep 17 00:00:00 2001
 From: local-build <local@build>
 Date: Wed, 8 Apr 2026 12:19:06 -0500
 Subject: [PATCH] Patched for Raspberry Pi 5
@@ -10,7 +10,7 @@ Subject: [PATCH] Patched for Raspberry Pi 5
  3 files changed, 10 insertions(+), 15 deletions(-)
 
 diff --git a/Pkgfile b/Pkgfile
-index 3c356f1..113afce 100644
+index a90e915..2342e17 100644
 --- a/Pkgfile
 +++ b/Pkgfile
 @@ -26,10 +26,10 @@ vars:
@@ -18,9 +18,9 @@ index 3c356f1..113afce 100644
    uboot_rpi5_sha512: 1292e1c15b75fde569efd1f983aa38e8db2e8b10b19de964886c4e80988922263bb862f5eb3b39f2051c5b28f43958f40b1f0e5c036de7fd862dc30b603cde5d
  
 -  # renovate: datasource=github-tags depName=raspberrypi/linux
--  raspberrypi_kernel_version: stable_20250428
--  raspberrypi_kernel_sha256: c95906cfbc7808de5860c6d86537bea22e3501f600a5209de59a86cb436886f6
--  raspberrypi_kernel_sha512: 0ed5d490c491e590b5980dccf6fcac0dd3c47accbfacd40d91507c12801cff34fa6a1c68991c8a6c57bb259c909121414766f35a0b11c4bd5d62c3e11d710839
+-  raspberrypi_kernel_version: stable_20260724
+-  raspberrypi_kernel_sha256: ed379d946780441248e5636a41d56fee11161f474025d4216a9fe037daef1b25
+-  raspberrypi_kernel_sha512: b70147da8eae0a4f6b2f64ad0fc6ab1dd9a415de944646000defb7e8a418c5cba4d6a0727006721e536f0cd6f3c4959c4d921551b8eed8e3b49aab7f1f186d27
 +  # rpi-6.18.y branch, commit a72a0085aeac (2026-05-13), kernel 6.18.29
 +  raspberrypi_kernel_version: a72a0085aeac23ac8aa76c90c476e20626046ea7
 +  raspberrypi_kernel_sha256: 88c2c60538e4c79d59d5aaeed8925cf9a12ec4550345c71d1458984f3942eb94
@@ -72,3 +72,6 @@ index 9bef001..68d995c 100644
  # Load U-Boot.
  kernel=u-boot.bin
  # Forces the kernel loading system to assume a 64-bit kernel.
+-- 
+2.53.0
+

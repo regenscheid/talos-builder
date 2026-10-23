@@ -116,10 +116,16 @@ Needed for as long as the kernel is the vendor kernel. Keep
 The branch (`v0.2.0` + 7 commits, tip `0995597`) adds a dedicated `rpi_5`
 U-Boot 2026.07 with the bcm2712/RP1 series. Still needed for NVMe boot.
 
-Upstream overlay changes since `v0.2.0` (`v0.2.1`, `v0.2.2`) are DTB fixes so
-the **mainline** kernel works with vendor DTBs (CM5 Ethernet MDIO layout, Pi 5
-compatible strings). They are not needed while the DTBs come from the vendor
-kernel itself.
+For Talos 1.14 the same 7 commits are rebased onto upstream `v0.2.2` (what
+Talos 1.14.4's Image Factory uses) as `rpiboot202607-v0.2.2`, tip `512f373`.
+They rebase without conflicts and with identical content. v0.2.2 brings newer
+Pi firmware (`1.20260521`), the 1.14-era tools/bldr, and machinery v1.13.8
+for the installers. Its remaining changes are DTB fixes so the **mainline**
+kernel works with vendor DTBs (CM5 Ethernet MDIO layout, Pi 5 compatible
+strings), which the vendor-DTB build skips. The overlay patch conflicts only on
+`raspberrypi_kernel_version`, resolved to the vendor pin. The `rpi_5` and
+`rpi_generic` installers cross-compile and vet for arm64; the full overlay
+build (U-Boot) needs the arm64 CI runner.
 
 ## Upstream issues checked
 

@@ -7,7 +7,7 @@ PKG_VERSION := release-1.14
 # artifact from its own pin.
 PKG_COMMIT := 2ec10eb
 TALOS_VERSION := v1.14.4
-SBCOVERLAY_VERSION := rpiboot202607
+SBCOVERLAY_VERSION := rpiboot202607-v0.2.2
 
 PUSH ?= true
 REGISTRY ?= ghcr.io
