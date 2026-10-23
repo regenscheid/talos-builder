@@ -1,4 +1,4 @@
-From f2c7a28777640251f799b915d77a4ff5c9197fe6 Mon Sep 17 00:00:00 2001
+From 548bb2185b10238c9346faad3ad681d20ac3b96a Mon Sep 17 00:00:00 2001
 From: local-build <local@build>
 Date: Sun, 17 May 2026 12:13:34 -0500
 Subject: [PATCH 2/2] Support alternative sed interpreter
@@ -8,7 +8,7 @@ Subject: [PATCH 2/2] Support alternative sed interpreter
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index f42e082..83bceb3 100644
+index 5bba964..60f91f5 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -4,6 +4,7 @@
@@ -31,5 +31,5 @@ index f42e082..83bceb3 100644
  USERNAME ?= siderolabs
  REGISTRY_AND_USERNAME ?= $(REGISTRY)/$(USERNAME)
 -- 
-2.50.1 (Apple Git-155)
+2.53.0
 

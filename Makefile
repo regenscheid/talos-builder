@@ -1,11 +1,12 @@
-PKG_VERSION := release-1.13
-# Deliberately behind what TALOS_VERSION pins (v1.13.12 wants v1.13.0-80-g19e92dc).
-# patches/siderolabs/pkgs/0001-Patched-for-Raspberry-Pi-5.patch is a large
-# kernel .config patch that does not apply to f677246 or 19e92dc. Only the kernel package
-# is built from this tree and passed to Talos via PKG_KERNEL; Talos pulls every
-# other pkgs artifact from its own pin, so the two can diverge safely.
-PKG_COMMIT := 969f61c
-TALOS_VERSION := v1.13.12
+PKG_VERSION := release-1.14
+# The pkgs commit TALOS_VERSION pins (v1.14.4 wants v1.14.0-44-g2ec10eb).
+# patches/siderolabs/pkgs/0001-Patched-for-Raspberry-Pi-5.patch carries a full
+# kernel .config generated against exactly this commit, so regenerate it (see
+# PATCHES.md) whenever PKG_COMMIT moves. Only the kernel package is built from
+# this tree and passed to Talos via PKG_KERNEL; Talos pulls every other pkgs
+# artifact from its own pin.
+PKG_COMMIT := 2ec10eb
+TALOS_VERSION := v1.14.4
 SBCOVERLAY_VERSION := rpiboot202607
 
 PUSH ?= true
@@ -47,7 +48,7 @@ SBCOVERLAY_TAG ?= $(shell cd $(CHECKOUTS_DIRECTORY)/sbc-raspberrypi && git descr
 # patches-linux recipe below. Bump it by hand when you change those. Adding an
 # input to the hash only costs a rebuild; leaving one out ships a stale kernel,
 # so err towards bumping.
-KERNEL_EPOCH ?= 1
+KERNEL_EPOCH ?= 2
 KERNEL_INPUT_HASH := $(shell cat $(PATCHES_DIRECTORY)/siderolabs/pkgs/*.patch \
 	$(PATCHES_DIRECTORY)/linux/*.patch 2>/dev/null \
 	| { shasum -a 256 2>/dev/null || sha256sum; } | cut -c1-12)
@@ -111,6 +112,12 @@ patches-linux:
 	rm -f "$(CHECKOUTS_DIRECTORY)/pkgs/kernel/build/patches/0002-net-macb-insert-PCIe-read-barrier-before-TX-completi.patch"
 	rm -f "$(CHECKOUTS_DIRECTORY)/pkgs/kernel/build/patches/0003-net-macb-add-TX-stall-watchdog-as-defence-in-depth-s.patch"
 	rm -f "$(CHECKOUTS_DIRECTORY)/pkgs/kernel/build/patches/0003-net-macb-add-TX-stall-watchdog-to-recover-from-lost-.patch"
+	# release-1.14 backports macb EEE support from mainline; the vendor tree
+	# already carries its own version of these commits
+	rm -f "$(CHECKOUTS_DIRECTORY)/pkgs/kernel/build/patches/0008-net-cadence-macb-add-EEE-LPI-statistics-counters.patch"
+	rm -f "$(CHECKOUTS_DIRECTORY)/pkgs/kernel/build/patches/0009-net-cadence-macb-implement-EEE-TX-LPI-support.patch"
+	rm -f "$(CHECKOUTS_DIRECTORY)/pkgs/kernel/build/patches/0010-net-cadence-macb-add-ethtool-EEE-support.patch"
+	rm -f "$(CHECKOUTS_DIRECTORY)/pkgs/kernel/build/patches/0011-net-cadence-macb-enable-EEE-for-Raspberry-Pi-RP1.patch"
 	@if [ -d "$(PATCHES_DIRECTORY)/linux" ] && ls "$(PATCHES_DIRECTORY)/linux"/*.patch >/dev/null 2>&1; then \
 		mkdir -p "$(CHECKOUTS_DIRECTORY)/pkgs/kernel/build/patches" && \
 		cp -v "$(PATCHES_DIRECTORY)/linux"/*.patch "$(CHECKOUTS_DIRECTORY)/pkgs/kernel/build/patches/"; \
