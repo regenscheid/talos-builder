@@ -6,9 +6,9 @@ on:
 env:
   REGISTRY: ghcr.io
   REGISTRY_USERNAME: ${{ github.repository_owner }}/talos-builder
-  # Extensions to bake into the installer image.
-  # Format: space-separated list of image:tag references (digests resolved at build time).
-  # Versions follow the siderolabs/extensions catalog for the Talos release.
+  # Extensions to bake into the installer image, as image:tag references.
+  # Each must appear in the siderolabs/extensions catalog for the Talos
+  # release; its digest is taken from that catalog, never from the tag.
   # Not usable on Pi 5 with this kernel, so deliberately absent:
   #   gvisor          -- built for 4K pages; the vendor kernel uses 16K pages.
   #   kata-containers -- runs VMs on cloud-hypervisor, which needs GICv3 under
@@ -62,11 +62,24 @@ jobs:
 
       - name: Resolve extension image digests
         run: |
+          # Extension tags such as iscsi-tools:v0.2.0 are reused across Talos
+          # releases, so the tag's current digest can be a build for another
+          # release (v1.13.12-rpi5-rc1 got an iscsi-tools needing libcrypto.so.4,
+          # which Talos 1.13 lacks). Take the digests the release's own catalog
+          # pins, which is what Image Factory uses.
+          CATALOG="ghcr.io/siderolabs/extensions:${TALOS_VERSION}"
+          crane export --platform linux/arm64 "$CATALOG" - | tar -xOf - image-digests > image-digests
           EXTENSIONS=""
           while IFS= read -r line; do
             IMAGE="${line#*=}"
-            DIGEST=$(crane digest "$IMAGE")
-            EXTENSIONS="$EXTENSIONS $IMAGE@$DIGEST"
+            PINNED=$(awk -v p="${IMAGE}@sha256:" 'index($0, p) == 1' image-digests)
+            if [ -z "$PINNED" ]; then
+              echo "::error::${IMAGE} is not in ${CATALOG}; it lists:"
+              awk -v p="${IMAGE%:*}:" 'index($0, p) == 1' image-digests | grep . || echo "(no ${IMAGE%:*} at all)"
+              exit 1
+            fi
+            echo "${PINNED}"
+            EXTENSIONS="$EXTENSIONS $PINNED"
           done < <(env | grep '^EXTENSION_')
           echo "EXTENSIONS=${EXTENSIONS# }" >> $GITHUB_ENV
 
@@ -122,7 +135,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          INSTALLER_PI5="${{ env.REGISTRY }}/${{ env.REGISTRY_USERNAME }}/installer:${{ github.ref_name }}"
+          INSTALLER_PI5="${{ env.REGISTRY }}/${{ env.REGISTRY_USERNAME }}/installer:${{ github.ref_name }}-arm64-extensions"
           NOTES=$(cat <<EOF
           > ⚠️ Experimental build, use at your own risk.
 
